@@ -8,9 +8,6 @@
 const char* DEVICE_ADDRESS = "c0:08:e1:98:fc:c8";
 
 unsigned long monitoringStart = 0;
-unsigned long lastTick = 0;
-unsigned long tickCount = 0;
-unsigned long tickInterval = 3 * 1000;
 
 TeslaVehicle vehicle;
 TeslaCANMessageProcessor processor(&vehicle);
@@ -28,6 +25,9 @@ void setup() {
   }
 }
 
+unsigned long lastTick = 0;
+unsigned long tickCount = 0;
+unsigned long tickInterval = 3 * 1000;
 void tick() {
   if (millis() - lastTick > tickInterval) {
     Serial.print(".");
@@ -42,6 +42,15 @@ void tick() {
   }
 }
 
+long lastUpdateInLoop = 0;
+void detectLongTask() {
+  auto delta = millis() - lastUpdateInLoop;
+  if (delta > 1000 / 60) {
+    log_w("\nLong task detected: %dms\n", delta);
+  }
+  lastUpdateInLoop = millis();
+}
+
 void trackMemory() {
   if (millis() - lastTick > tickInterval) {
     Serial.println(esp_get_free_heap_size());
@@ -53,6 +62,7 @@ void trackMemory() {
 void loop() {
   connector.update();
   if (listener.isListening()) {
-    trackMemory();
+    tick();
   }
+  detectLongTask();
 }
