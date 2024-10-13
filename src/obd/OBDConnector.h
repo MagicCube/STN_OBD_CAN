@@ -4,19 +4,23 @@
 
 #include "../ble/BLESerialConnection.h"
 #include "../ble/BLESerialStream.h"
+#include "../can/CANMessageDefinition.h"
+#include "../can/CANMessageDefinitionCollection.h"
 #include "../can/CANMessageEncoder.h"
-#include "../can/CANMessageFilters.h"
 #include "../can/CANMessageListener.h"
 
 #define OBD_LOG_STATE 0
 
 class OBDConnector {
  public:
-  OBDConnector() { _connection = new BLESerialConnection(); }
+  OBDConnector(const CANMessageDefinitionCollection& messageDefinitions)
+      : _messageDefinitions(messageDefinitions) {
+    _connection = new BLESerialConnection();
+  }
 
-  bool isConnected() { return _connection->isConnected() && _stream; }
+  bool isConnected() const { return _connection->isConnected() && _stream; }
 
-  bool isMonitoring() { return isConnected() && _monitoring; }
+  bool isMonitoring() const { return isConnected() && _monitoring; }
 
   bool connect(const char* deviceAddress) {
     bool connected = _connection->connect(deviceAddress);
@@ -39,22 +43,15 @@ class OBDConnector {
     sendCommand("AT SP 6");  // Set protocol to ISO 15765
     sendCommand("AT CAF0");  // Turn off CAN auto-flow control
     sendCommand("AT CFC0");  // Turn off CAN flow control
-    if (this->getFilters()) {
-      std::vector<uint16_t>& passMessageIds =
-          this->getFilters()->getPassMessageIds();
-      for (const uint16_t messageId : passMessageIds) {
-        auto command = String("ST FAP ") +
-                       CANMessageEncoder::formatMessageId(messageId) + ",7FF";
-        sendCommand(command);
-      }
+    auto messageIds = _messageDefinitions.getMessageIds();
+    for (const auto& messageId : messageIds) {
+      auto command = String("ST FAP ") + messageId + ",7FF";
+      sendCommand(command);
     }
     log_i("OBD is now ready to monitor.");
   }
 
-  CANMessageFilters* getFilters() { return _filters; }
-  void setFilters(CANMessageFilters* filters) { _filters = filters; }
-
-  CANMessageListener* getListener() { return _listener; }
+  CANMessageListener* getListener() const { return _listener; }
   void setListener(CANMessageListener* listener) { _listener = listener; }
 
   void sendCommand(const char* command, bool expectOK = true) {
@@ -78,7 +75,7 @@ class OBDConnector {
     if (_monitoring) return;
     sendCommand("ST M", false);
     if (_listener) {
-      _listener->startListening(_stream, _filters);
+      _listener->startListening(_stream);
     }
     log_i("Monitoring is now started");
     _monitoring = true;
@@ -129,8 +126,8 @@ class OBDConnector {
 
  private:
   BLESerialConnection* _connection;
+  const CANMessageDefinitionCollection& _messageDefinitions;
   BLESerialStream* _stream;
   CANMessageListener* _listener;
-  CANMessageFilters* _filters;
   bool _monitoring = false;
 };

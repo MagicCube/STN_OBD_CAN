@@ -1,8 +1,9 @@
 #include <Arduino.h>
 #include <STN_OBD_CAN.h>
 
-#include "../examples/tesla/TeslaCANMessageProcessor.h"
-#include "../examples/tesla/TeslaVehicle.h"
+#include "TeslaCANMessageProcessor.h"
+#include "TeslaVehicle.h"
+#include "definitions.h"
 
 const char* DEVICE_ADDRESS = "c0:08:e1:98:fc:c8";
 
@@ -11,33 +12,15 @@ unsigned long lastTick = 0;
 unsigned long tickCount = 0;
 unsigned long tickInterval = 3 * 1000;
 
-const uint16_t MESSAGE_IDS[] = {
-    0x102,  // Left Door Status
-    0x103,  // Right Door Status
-    0x118,  // Drive System Status
-    0x257,  // Speed
-    0x273,  // Ambient Brightness
-    0x292,  // State of Charge
-    0x318,  // TODO: System Time UTC
-    0x321,  // Temperature
-    0x33A,  // Range
-    0x3C2,  // TODO: Buttons
-    0x3E2,  // Left Turn Signals / Brake Lights
-    0x3E3,  // Right Turn Signals
-};
-
 TeslaVehicle vehicle;
-OBDConnector connector;
-CANMessageFilters filters(MESSAGE_IDS,
-                          sizeof(MESSAGE_IDS) / sizeof(MESSAGE_IDS[0]));
-CANMessageListener listener;
 TeslaCANMessageProcessor processor(&vehicle);
+CANMessageListener listener(TESLA_CAN_MESSAGES);
+OBDConnector connector(TESLA_CAN_MESSAGES);
 
 void setup() {
   Serial.begin(115200);
 
   listener.setProcessor(&processor);
-  connector.setFilters(&filters);
   connector.setListener(&listener);
   if (connector.connect(DEVICE_ADDRESS)) {
     connector.startMonitoring();

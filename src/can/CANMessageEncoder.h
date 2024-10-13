@@ -22,18 +22,6 @@ class CANMessageEncoder {
     return hex_to_uint16(hexString);
   }
 
-  static String formatMessageId(uint16_t messageId) {
-    auto hex = String(messageId, HEX);
-    hex.toUpperCase();
-    if (hex.length() == 1) {
-      return "00" + hex;
-    } else if (hex.length() == 2) {
-      return "0" + hex;
-    } else {
-      return hex;
-    }
-  }
-
   static int8_t extract_int8(uint8_t* frame, int startBit, int bitLength,
                              float factor = 1.0, float offset = 0.0) {
     uint8_t mask = (1 << bitLength) - 1;

@@ -12,7 +12,7 @@ class BLESerialConnection {
  public:
   BLESerialConnection() {}
 
-  bool isConnected() { return _connected; }
+  bool isConnected() const { return _connected; }
 
   bool connect(const char* deviceAddressLiteral) {
     NimBLEAddress deviceAddress(deviceAddressLiteral);

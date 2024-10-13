@@ -4,136 +4,75 @@
 #include <STN_OBD_CAN.h>
 
 #include "TeslaVehicle.h"
+#include "definitions.h"
 
 class TeslaCANMessageProcessor : public CANMessageProcessor {
  public:
-  TeslaCANMessageProcessor(TeslaVehicle* vehicle) {}
+  TeslaCANMessageProcessor(TeslaVehicle* vehicle) : _vehicle(vehicle) {}
 
-  TeslaVehicle* getVehicle() { return _vehicle; }
+  TeslaVehicle* getVehicle() const { return _vehicle; }
 
-  void process(uint16_t messageId, String& messageData) override {
+  void process(uint16_t messageId, uint8_t* frame) override {
     switch (messageId) {
-      case 0x102: {
-        if (messageData.length() == 16) {
-          auto frame = CANMessageEncoder::parseFrame(messageData);
-          if (frame) {
-            auto value = CANMessageEncoder::extract_uint8(frame, 0, 4);
-            _vehicle->setFrontLeftDoorClosed(value == 2);
-            value = CANMessageEncoder::extract_uint8(frame, 4, 4);
-            _vehicle->setRearLeftDoorClosed(value == 2);
-            delete[] frame;
-          }
+      case ID102VCLEFT_doorStatus: {
+        auto value = VCLEFT_frontLatchStatus;
+        _vehicle->setFrontLeftDoorClosed(value == 2);
+        value = VCLEFT_rearLatchStatus;
+        _vehicle->setRearLeftDoorClosed(value == 2);
+        break;
+      }
+      case ID103VCRIGHT_doorStatus: {
+        auto value = VCRIGHT_frontLatchStatus;
+        _vehicle->setFrontRightDoorClosed(value == 2);
+        value = VCRIGHT_rearLatchStatus;
+        _vehicle->setRearRightDoorClosed(value == 2);
+        break;
+      }
+      case ID118DriveSystemStatus: {
+        auto value = DI_gear;
+        if (value == 0 || value == 7) {
+          _vehicle->setGear(Gear::UNKNOWN);
+        } else {
+          _vehicle->setGear(static_cast<Gear>(value));
         }
         break;
       }
-      case 0x103: {
-        if (messageData.length() == 16) {
-          auto frame = CANMessageEncoder::parseFrame(messageData);
-          if (frame) {
-            auto value = CANMessageEncoder::extract_uint8(frame, 0, 4);
-            _vehicle->setFrontRightDoorClosed(value == 2);
-            value = CANMessageEncoder::extract_uint8(frame, 4, 4);
-            _vehicle->setRearRightDoorClosed(value == 2);
-            delete[] frame;
-          }
-        }
+      case ID257DIspeed: {
+        auto value = DI_uiSpeed;
+        _vehicle->setSpeed(value);
         break;
       }
-      case 0x118: {
-        if (messageData.length() == 16) {
-          auto frame = CANMessageEncoder::parseFrame(messageData);
-          if (frame) {
-            auto value = CANMessageEncoder::extract_uint8(frame, 21, 3);
-            if (value == 0 || value == 7) {
-              _vehicle->setGear(Gear::UNKNOWN);
-            } else {
-              _vehicle->setGear(static_cast<Gear>(value));
-            }
-            delete[] frame;
-          }
-        }
+      case ID273UI_vehicleControl: {
+        auto value = UI_displayBrightnessLevel;
+        _vehicle->setDisplayBrightnessLevel(value);
         break;
       }
-      case 0x257: {
-        if (messageData.length() == 16) {
-          auto frame = CANMessageEncoder::parseFrame(messageData);
-          if (frame) {
-            auto value = CANMessageEncoder::extract_uint16(frame, 24, 9);
-            _vehicle->setSpeed(value);
-            delete[] frame;
-          }
-        }
+      case ID292BMS_SOC: {
+        auto value = SOCmin292;
+        _vehicle->setStateOfCharge(value);
         break;
       }
-      case 0x273: {
-        if (messageData.length() == 16) {
-          auto frame = CANMessageEncoder::parseFrame(messageData);
-          if (frame) {
-            auto value = CANMessageEncoder::extract_uint8(frame, 32, 8, 0.5);
-            _vehicle->setDisplayBrightnessLevel(value);
-            delete[] frame;
-          }
-        }
+      case ID321VCFRONT_sensors: {
+        auto value = VCFRONT_tempAmbientFiltered;
+        _vehicle->setTemperatureAmbient(value);
         break;
       }
-      case 0x292: {
-        if (messageData.length() == 16) {
-          auto frame = CANMessageEncoder::parseFrame(messageData);
-          if (frame) {
-            auto stateOfCharge =
-                CANMessageEncoder::extract_float(frame, 0, 10, 0.1);
-            _vehicle->setStateOfCharge(stateOfCharge);
-            delete[] frame;
-          }
-        }
+      case ID33AUI_rangeSOC: {
+        auto value = UI_Range;
+        auto valueInKm = convertMilesToKilometers(value);
+        _vehicle->setRange(valueInKm);
         break;
       }
-      case 0x321: {
-        if (messageData.length() == 16) {
-          auto frame = CANMessageEncoder::parseFrame(messageData);
-          if (frame) {
-            auto value =
-                CANMessageEncoder::extract_float(frame, 40, 8, 0.5, -40);
-            _vehicle->setTemperatureAmbient(value);
-            delete[] frame;
-          }
-        }
+      case ID3E2VCLEFT_lightStatus: {
+        auto value = VCLEFT_turnSignalStatus;
+        _vehicle->setLeftTurnSignal(value == 1);
+        value = VCLEFT_brakeLightStatus;
+        _vehicle->setBrakeLight(value == 1);
         break;
       }
-      case 0x33a: {
-        if (messageData.length() == 16) {
-          auto frame = CANMessageEncoder::parseFrame(messageData);
-          if (frame) {
-            auto value = CANMessageEncoder::extract_uint16(frame, 0, 10);
-            auto valueInKm = convertMilesToKilometers(value);
-            _vehicle->setRange(valueInKm);
-            delete[] frame;
-          }
-        }
-        break;
-      }
-      case 0x3e2: {
-        if (messageData.length() == 14) {
-          auto frame = CANMessageEncoder::parseFrame(messageData);
-          if (frame) {
-            auto value = CANMessageEncoder::extract_uint8(frame, 4, 2);
-            _vehicle->setLeftTurnSignal(value == 1);
-            value = CANMessageEncoder::extract_uint8(frame, 0, 2);
-            _vehicle->setBrakeLight(value == 1);
-            delete[] frame;
-          }
-        }
-        break;
-      }
-      case 0x3e3: {
-        if (messageData.length() == 8) {
-          auto frame = CANMessageEncoder::parseFrame(messageData);
-          if (frame) {
-            auto value = CANMessageEncoder::extract_uint8(frame, 4, 2);
-            _vehicle->setRightTurnSignal(value == 1);
-            delete[] frame;
-          }
-        }
+      case ID3E3VCRIGHT_lightStatus: {
+        auto value = VCRIGHT_turnSignalStatus;
+        _vehicle->setRightTurnSignal(value == 1);
         break;
       }
       default:
