@@ -128,6 +128,14 @@ class TeslaVehicle {
     }
   }
 
+  int8_t getSwitchRightScrollTicks() { return _switchRightScrollTicks; }
+  void setSwitchRightScrollTicks(int8_t value) {
+    if (_switchRightScrollTicks != value) {
+      _switchRightScrollTicks = value;
+      logState("Switch right scroll ticks", _switchRightScrollTicks);
+    }
+  }
+
   bool hasDoorOpen() {
     return !isFrontLeftDoorClosed() || !isFrontRightDoorClosed() ||
            !isRearLeftDoorClosed() || !isRearRightDoorClosed();
@@ -149,6 +157,13 @@ class TeslaVehicle {
     _frontRightDoorClosed = true;
     _rearLeftDoorClosed = true;
     _rearRightDoorClosed = true;
+    _switchRightScrollTicks = 21;
+  }
+
+  void logState(const char* name, int8_t value) {
+#if VEHICLE_LOG_STATE
+    Serial.printf("%s: %d\n", name, value);
+#endif
   }
 
   void logState(const char* name, uint8_t value) {
@@ -193,4 +208,6 @@ class TeslaVehicle {
   bool _frontRightDoorClosed;
   bool _rearLeftDoorClosed;
   bool _rearRightDoorClosed;
+
+  int8_t _switchRightScrollTicks;
 };

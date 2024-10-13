@@ -35,7 +35,7 @@
 #define UI_Range SG(uint16, 0, 10)
 
 #define ID3C2VCLEFT_switchStatus 0x3C2
-#define VCLEFT_swcRightScrollTicks SG(uint8, 24, 6)
+#define VCLEFT_swcRightScrollTicks SG(int8, 24, 6)
 
 #define ID3E2VCLEFT_lightStatus 0x3E2
 #define VCLEFT_turnSignalStatus SG(uint8, 4, 2)

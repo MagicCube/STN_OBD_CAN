@@ -63,6 +63,13 @@ class TeslaCANMessageProcessor : public CANMessageProcessor {
         _vehicle->setRange(valueInKm);
         break;
       }
+      case ID3C2VCLEFT_switchStatus: {
+        auto value = VCLEFT_swcRightScrollTicks;
+        if (value) {
+          _vehicle->setSwitchRightScrollTicks(value);
+        }
+        break;
+      }
       case ID3E2VCLEFT_lightStatus: {
         auto value = VCLEFT_turnSignalStatus;
         _vehicle->setLeftTurnSignal(value == 1);
