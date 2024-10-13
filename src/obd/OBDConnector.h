@@ -4,9 +4,9 @@
 
 #include "../ble/BLESerialConnection.h"
 #include "../ble/BLESerialStream.h"
+#include "../can/CANMessageEncoder.h"
 #include "../can/CANMessageFilters.h"
 #include "../can/CANMessageListener.h"
-#include "../can/CANMessageParser.h"
 
 #define OBD_LOG_STATE 0
 
@@ -44,7 +44,7 @@ class OBDConnector {
           this->getFilters()->getPassMessageIds();
       for (const uint16_t messageId : passMessageIds) {
         auto command = String("ST FAP ") +
-                       CANMessageParser::formatMessageId(messageId) + ",7FF";
+                       CANMessageEncoder::formatMessageId(messageId) + ",7FF";
         sendCommand(command);
       }
     }

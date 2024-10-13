@@ -62,7 +62,7 @@ class CANMessageListener {
   void _processRawMessage(String rawMessage) {
     if (rawMessage.length() > 3) {
       uint16_t messageId =
-          CANMessageParser::parseMessageId(rawMessage.substring(0, 3));
+          CANMessageEncoder::parseMessageId(rawMessage.substring(0, 3));
       if (_filters->filter(messageId)) {
         String messageData = rawMessage.substring(3);
         if (_processor) {

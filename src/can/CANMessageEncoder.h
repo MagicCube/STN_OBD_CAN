@@ -4,7 +4,7 @@
 
 #include "../utils/hex_converters.h"
 
-class CANMessageParser {
+class CANMessageEncoder {
  public:
   static uint8_t* parseFrame(const String& hexString) {
     int len = hexString.length();

@@ -4,7 +4,7 @@
 
 #include "../utils/hex_converters.h"
 #include "../utils/unit_converters.h"
-#include "CANMessageParser.h"
+#include "CANMessageEncoder.h"
 
 class CANMessageProcessor {
  public:
