@@ -1,0 +1,196 @@
+#pragma once
+
+#include <Arduino.h>
+
+class TeslaCANMessageProcessor;
+
+enum Gear {
+  UNKNOWN = 0,
+  P = 1,
+  R = 2,
+  N = 3,
+  D = 4,
+};
+
+#define VEHICLE_LOG_STATE 1
+
+class TeslaVehicle {
+  friend class TeslaCANMessageProcessor;
+
+ public:
+  TeslaVehicle() { reset(); }
+
+  Gear getGear() { return _gear; }
+  void setGear(Gear gear) {
+    if (_gear != gear) {
+      _gear = gear;
+      logState("Gear", (uint16_t)_gear);
+    }
+  }
+
+  uint16_t getSpeed() { return _speed; }
+  void setSpeed(uint16_t speed) {
+    if (_speed != speed) {
+      _speed = speed;
+      logState("Speed", _speed);
+    }
+  }
+
+  float_t getRange() { return _range; }
+  void setRange(float_t range) {
+    if (_range != range) {
+      _range = range;
+      logState("Range", _range);
+    }
+  }
+
+  float_t getStateOfCharge() { return _stateOfCharge; }
+  void setStateOfCharge(float_t stateOfCharge) {
+    if (_stateOfCharge != stateOfCharge) {
+      _stateOfCharge = stateOfCharge;
+      logState("State of charge", _stateOfCharge);
+    }
+  }
+
+  float_t getTemperatureAmbient() { return _temperatureAmbient; }
+  void setTemperatureAmbient(float_t temperatureAmbient) {
+    if (_temperatureAmbient != temperatureAmbient) {
+      _temperatureAmbient = temperatureAmbient;
+      logState("Temperature ambient", _temperatureAmbient);
+    }
+  }
+
+  uint8_t getDisplayBrightnessLevel() { return _displayBrightnessLevel; }
+  void setDisplayBrightnessLevel(uint8_t displayBrightnessLevel) {
+    if (_displayBrightnessLevel != displayBrightnessLevel) {
+      _displayBrightnessLevel = displayBrightnessLevel;
+      logState("Display brightness level", _displayBrightnessLevel);
+    }
+  }
+
+  bool isLeftTurnSignalOn() { return _leftTurnSignal; }
+  void setLeftTurnSignal(bool leftTurnSignal) {
+    if (_leftTurnSignal != leftTurnSignal) {
+      _leftTurnSignal = leftTurnSignal;
+      logState("Left turn signal", _leftTurnSignal);
+    }
+  }
+
+  bool isRightTurnSignalOn() { return _rightTurnSignal; }
+  void setRightTurnSignal(bool rightTurnSignal) {
+    if (_rightTurnSignal != rightTurnSignal) {
+      _rightTurnSignal = rightTurnSignal;
+      logState("Right turn signal", _rightTurnSignal);
+    }
+  }
+
+  bool isHazardLightsOn() {
+    return isRightTurnSignalOn() && isLeftTurnSignalOn();
+  }
+
+  bool isBrakeLightOn() { return _brakeLight; }
+  void setBrakeLight(bool value) {
+    if (_brakeLight != value) {
+      _brakeLight = value;
+      logState("Brake light", _brakeLight);
+    }
+  }
+
+  bool isFrontLeftDoorClosed() { return _frontLeftDoorClosed; }
+  void setFrontLeftDoorClosed(bool value) {
+    if (_frontLeftDoorClosed != value) {
+      _frontLeftDoorClosed = value;
+      logState("Front left door closed", _frontLeftDoorClosed);
+    }
+  }
+
+  bool isFrontRightDoorClosed() { return _frontRightDoorClosed; }
+  void setFrontRightDoorClosed(bool value) {
+    if (_frontRightDoorClosed != value) {
+      _frontRightDoorClosed = value;
+      logState("Front right door closed", _frontRightDoorClosed);
+    }
+  }
+
+  bool isRearLeftDoorClosed() { return _rearLeftDoorClosed; }
+  void setRearLeftDoorClosed(bool value) {
+    if (_rearLeftDoorClosed != value) {
+      _rearLeftDoorClosed = value;
+      logState("Rear left door closed", _rearLeftDoorClosed);
+    }
+  }
+
+  bool isRearRightDoorClosed() { return _rearRightDoorClosed; }
+  void setRearRightDoorClosed(bool value) {
+    if (_rearRightDoorClosed != value) {
+      _rearRightDoorClosed = value;
+      logState("Rear right door closed", _rearRightDoorClosed);
+    }
+  }
+
+  bool hasDoorOpen() {
+    return !isFrontLeftDoorClosed() || !isFrontRightDoorClosed() ||
+           !isRearLeftDoorClosed() || !isRearRightDoorClosed();
+  }
+
+  bool isMoving() { return getSpeed() > 0; }
+
+  void reset() {
+    _gear = Gear::P;
+    _speed = 0;
+    _range = 0;
+    _stateOfCharge = 0;
+    _temperatureAmbient = 0;
+    _displayBrightnessLevel = 50;
+    _leftTurnSignal = false;
+    _rightTurnSignal = false;
+    _brakeLight = false;
+    _frontLeftDoorClosed = true;
+    _frontRightDoorClosed = true;
+    _rearLeftDoorClosed = true;
+    _rearRightDoorClosed = true;
+  }
+
+  void logState(const char* name, uint8_t value) {
+#if VEHICLE_LOG_STATE
+    Serial.printf("%s: %d\n", name, value);
+#endif
+  }
+
+  void logState(const char* name, uint16_t value) {
+#if VEHICLE_LOG_STATE
+    Serial.printf("%s: %d\n", name, value);
+#endif
+  }
+
+  void logState(const char* name, float_t value) {
+#if VEHICLE_LOG_STATE
+    Serial.printf("%s: %.2f\n", name, value);
+#endif
+  }
+
+  void logState(const char* name, bool value) {
+#if VEHICLE_LOG_STATE
+    Serial.printf("%s: %s\n", name, value ? "true" : "false");
+#endif
+  }
+
+ private:
+  Gear _gear;
+  uint16_t _speed;
+  float_t _range;
+  float_t _stateOfCharge;
+
+  float_t _temperatureAmbient;
+
+  uint8_t _displayBrightnessLevel;
+
+  bool _leftTurnSignal;
+  bool _rightTurnSignal;
+  bool _brakeLight;
+
+  bool _frontLeftDoorClosed;
+  bool _frontRightDoorClosed;
+  bool _rearLeftDoorClosed;
+  bool _rearRightDoorClosed;
+};
