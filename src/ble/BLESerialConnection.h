@@ -6,8 +6,6 @@ class NimBLERemoteCharacteristic;
 
 class BLESerialConnection {
  public:
-  BLESerialConnection();
-
   bool isConnected() const { return _connected; }
 
   bool connect(const char* deviceAddressLiteral);
