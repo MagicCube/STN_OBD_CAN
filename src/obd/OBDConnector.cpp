@@ -3,7 +3,7 @@
 #include "../ble/BLESerialConnection.h"
 #include "../ble/BLESerialStream.h"
 #include "../can/CANMessageDefinition.h"
-#include "../can/CANMessageEncoder.h"
+#include "../can/CANMessageDefinitionCollection.h"
 #include "../can/CANMessageListener.h"
 
 OBDConnector::OBDConnector(

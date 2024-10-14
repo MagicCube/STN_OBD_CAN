@@ -1,10 +1,8 @@
 #pragma once
 
-class CANMessageDefinition {
- private:
-  uint16_t _id;
-  uint8_t _length;
+#include <Arduino.h>
 
+class CANMessageDefinition {
  public:
   CANMessageDefinition() = default;
 
@@ -22,6 +20,9 @@ class CANMessageDefinition {
   uint8_t length() const { return _length; }
 
  private:
+  uint16_t _id;
+  uint8_t _length;
+
   static String _formatMessageId(uint16_t messageId) {
     auto hex = String(messageId, HEX);
     hex.toUpperCase();
