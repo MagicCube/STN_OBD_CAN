@@ -2,127 +2,42 @@
 
 #include <Arduino.h>
 
-#include "../ble/BLESerialConnection.h"
-#include "../ble/BLESerialStream.h"
-#include "../can/CANMessageDefinition.h"
-#include "../can/CANMessageDefinitionCollection.h"
-#include "../can/CANMessageEncoder.h"
-#include "../can/CANMessageListener.h"
+class BLESerialConnection;
+class BLESerialStream;
+class CANMessageDefinitionCollection;
+class CANMessageListener;
 
-#define OBD_LOG_STATE 0
+#define OBD_CONNECTOR_LOG_ENABLED 0
 
 class OBDConnector {
  public:
-  OBDConnector(const CANMessageDefinitionCollection& messageDefinitions)
-      : _messageDefinitions(messageDefinitions) {
-    _connection = new BLESerialConnection();
-  }
+  OBDConnector(const CANMessageDefinitionCollection& messageDefinitions);
 
-  bool isConnected() const { return _connection->isConnected() && _stream; }
+  bool isConnected() const;
 
-  bool isMonitoring() const { return isConnected() && _monitoring; }
+  bool isMonitoring() const;
 
-  bool connect(const char* deviceAddress) {
-    bool connected = _connection->connect(deviceAddress);
-    if (connected) {
-      _stream = _connection->getStream();
-      resetOBD();
-    }
-    return connected;
-  }
+  bool connect(const char* deviceAddress);
 
-  void resetOBD() {
-    if (!isConnected()) return;
-
-    log_i("Initializing OBD...");
-    sendCommand("AT D");     // Set all to defaults
-    sendCommand("AT E0");    // Disable echo
-    sendCommand("AT L0");    // Disable linefeeds
-    sendCommand("AT H1");    // Turn on header
-    sendCommand("AT S0");    // Turn off space
-    sendCommand("AT SP 6");  // Set protocol to ISO 15765
-    sendCommand("AT CAF0");  // Turn off CAN auto-flow control
-    sendCommand("AT CFC0");  // Turn off CAN flow control
-    auto messageIds = _messageDefinitions.getMessageIds();
-    for (const auto& messageId : messageIds) {
-      auto command = String("ST FAP ") + messageId + ",7FF";
-      sendCommand(command);
-    }
-    log_i("OBD is now ready to monitor.");
-  }
+  void resetOBD();
 
   CANMessageListener* getListener() const { return _listener; }
   void setListener(CANMessageListener* listener) { _listener = listener; }
 
-  void sendCommand(const char* command, bool expectOK = true) {
-    if (!isConnected()) return;
+  void sendCommand(const char* command, bool expectOK = true);
 
-    tx(command);
-    if (expectOK) {
-      String response = "";
-      do {
-        response = rx();
-      } while (response && response.indexOf("OK") == -1);
-    }
-  }
+  void sendCommand(const String& command, bool expectOK = true);
 
-  void sendCommand(const String& command, bool expectOK = true) {
-    sendCommand(command.c_str(), expectOK);
-  }
+  void startMonitoring();
 
-  void startMonitoring() {
-    if (!_connection->isConnected()) return;
-    if (_monitoring) return;
-    sendCommand("ST M", false);
-    if (_listener) {
-      _listener->startListening(_stream);
-    }
-    log_i("Monitoring is now started");
-    _monitoring = true;
-  }
+  void stopMonitoring();
 
-  void stopMonitoring() {
-    if (!isMonitoring()) return;
-    if (_listener) {
-      _listener->stopListening();
-    }
-    // Press any key to stop
-    sendCommand("AT", false);
-    if (_stream) {
-      _stream->clearBuffer();
-    }
-    log_i("Monitoring is now stopped");
-    _monitoring = false;
-  }
-
-  void update() {
-    if (isMonitoring()) {
-      if (_listener) {
-        _listener->update();
-      }
-    }
-  }
+  void update();
 
  protected:
-  String rx() {
-    String response = _stream->readStringUntil('>');
-#if OBD_LOG_STATE
-    if (response && response.length() > 0) {
-      Serial.print("RX: ");
-      Serial.println(response);
-    }
-#endif
-    return response;
-  }
+  String rx();
 
-  void tx(const String& command) {
-#if OBD_LOG_STATE
-    Serial.print("TX: ");
-    Serial.println(command);
-#endif
-    _stream->print(command);
-    _stream->print("\r");
-  }
+  void tx(const String& command);
 
  private:
   BLESerialConnection* _connection;
