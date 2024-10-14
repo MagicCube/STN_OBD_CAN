@@ -1,5 +1,7 @@
 #include "BLESerialConnection.h"
 
+#include <NimBLEDevice.h>
+
 #include "BLESerialStream.h"
 
 const NimBLEUUID SERIAL_SERVICE_ID("e7810a71-73ae-499d-8c15-faa9aef0c3f2");

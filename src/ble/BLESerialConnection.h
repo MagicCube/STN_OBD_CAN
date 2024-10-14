@@ -1,8 +1,8 @@
 #pragma once
 
-#include <NimBLEDevice.h>
-
 class BLESerialStream;
+class NimBLEClient;
+class NimBLERemoteCharacteristic;
 
 class BLESerialConnection {
  public:
@@ -18,7 +18,7 @@ class BLESerialConnection {
 
  private:
   NimBLEClient* _client = nullptr;
-  BLERemoteCharacteristic* _characteristic = nullptr;
+  NimBLERemoteCharacteristic* _characteristic = nullptr;
   BLESerialStream* _stream = nullptr;
   bool _connected = false;
 };

@@ -1,14 +1,14 @@
 #pragma once
 
-#include <NimBLEDevice.h>
 #include <Stream.h>
 
-#include <functional>
 #include <vector>
+
+class NimBLERemoteCharacteristic;
 
 class BLESerialStream : public Stream {
  public:
-  BLESerialStream(BLERemoteCharacteristic* characteristic,
+  BLESerialStream(NimBLERemoteCharacteristic* characteristic,
                   const size_t bufferSize = 4 * 1024);
 
   void subscribe();
@@ -33,7 +33,7 @@ class BLESerialStream : public Stream {
   size_t write(const uint8_t* buffer, size_t size) override;
 
  private:
-  BLERemoteCharacteristic* _characteristic;
+  NimBLERemoteCharacteristic* _characteristic;
   std::vector<uint8_t> _buffer;
   const size_t _bufferSize;
   size_t _head;

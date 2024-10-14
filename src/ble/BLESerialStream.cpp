@@ -1,6 +1,8 @@
 #include "BLESerialStream.h"
 
-BLESerialStream::BLESerialStream(BLERemoteCharacteristic* characteristic,
+#include <NimBLEDevice.h>
+
+BLESerialStream::BLESerialStream(NimBLERemoteCharacteristic* characteristic,
                                  const size_t bufferSize)
     : _characteristic(characteristic),
       _buffer(bufferSize),
