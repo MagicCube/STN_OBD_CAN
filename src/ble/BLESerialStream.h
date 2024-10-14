@@ -55,26 +55,6 @@ class BLESerialStream : public Stream {
     return result;
   }
 
-  /* String readAvailable() {
-    size_t availableBytes = available();
-    if (availableBytes == 0) {
-      return String();
-    }
-
-    String result;
-    result.reserve(availableBytes);
-
-    while (availableBytes--) {
-      int byte = read();
-      if (byte == -1) {
-        break;  // 处理 read() 返回 -1 的情况
-      }
-      result.concat((char)byte);
-    }
-
-    return result;
-  } */
-
   void clearBuffer() {
     _head = 0;
     _tail = 0;
@@ -82,7 +62,7 @@ class BLESerialStream : public Stream {
   }
 
  protected:
-  void onReceive(uint8_t* data, size_t length) {
+  void onReceive(const uint8_t* data, size_t length) {
     size_t head = _head;
     size_t tail = _tail;
     bool isFull = _isFull;
@@ -149,7 +129,7 @@ class BLESerialStream : public Stream {
  private:
   BLERemoteCharacteristic* _characteristic;
   std::vector<uint8_t> _buffer;
-  size_t _bufferSize;
+  const size_t _bufferSize;
   size_t _head;
   size_t _tail;
   bool _isFull;

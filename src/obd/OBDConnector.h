@@ -115,7 +115,7 @@ class OBDConnector {
     return response;
   }
 
-  void tx(String command) {
+  void tx(const String& command) {
 #if OBD_LOG_STATE
     Serial.print("TX: ");
     Serial.println(command);

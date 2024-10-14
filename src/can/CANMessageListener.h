@@ -65,7 +65,7 @@ class CANMessageListener {
     }
   }
 
-  void _readLines(String& content) {
+  void _readLines(const String& content) {
     int startIndex = 0;
     int endIndex = 0;
 

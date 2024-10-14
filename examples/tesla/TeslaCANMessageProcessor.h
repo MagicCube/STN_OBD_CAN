@@ -12,7 +12,7 @@ class TeslaCANMessageProcessor : public CANMessageProcessor {
 
   TeslaVehicle& getVehicle() const { return _vehicle; }
 
-  void process(const uint16_t messageId, const uint8_t* frame) override {
+  void process(uint16_t messageId, const uint8_t* frame) override {
     switch (messageId) {
       case ID102VCLEFT_doorStatus: {
         auto value = VCLEFT_frontLatchStatus;
