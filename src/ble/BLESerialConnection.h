@@ -10,14 +10,14 @@ const NimBLEUUID SERIAL_CHARACTERISTIC_ID(
 
 class BLESerialConnection {
  public:
-  BLESerialConnection() {}
+  BLESerialConnection() {
+    NimBLEDevice::init("");
+    NimBLEDevice::setPower(esp_power_level_t::ESP_PWR_LVL_P9);
+  }
 
   bool isConnected() const { return _connected; }
 
   bool connect(const char* deviceAddressLiteral) {
-    NimBLEDevice::init("");
-    NimBLEDevice::setPower(esp_power_level_t::ESP_PWR_LVL_P9);
-
     log_i("Connecting to BLE device...");
     NimBLEAddress deviceAddress(deviceAddressLiteral, 1);
     _client = NimBLEDevice::createClient(deviceAddress);
