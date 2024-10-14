@@ -20,7 +20,7 @@ class TeslaVehicle {
  public:
   TeslaVehicle() { reset(); }
 
-  Gear getGear() { return _gear; }
+  Gear getGear() const { return _gear; }
   void setGear(Gear gear) {
     if (_gear != gear) {
       _gear = gear;
