@@ -8,12 +8,11 @@ const NimBLEUUID SERIAL_SERVICE_ID("e7810a71-73ae-499d-8c15-faa9aef0c3f2");
 const NimBLEUUID SERIAL_CHARACTERISTIC_ID(
     "bef8d6c9-9c21-4c9e-b632-bd58c1009f9f");
 
-BLESerialConnection::BLESerialConnection() {
-  NimBLEDevice::init("");
-  NimBLEDevice::setPower(esp_power_level_t::ESP_PWR_LVL_P9);
-}
+BLESerialConnection::BLESerialConnection() {}
 
 bool BLESerialConnection::connect(const char* deviceAddressLiteral) {
+  NimBLEDevice::init("");
+  NimBLEDevice::setPower(esp_power_level_t::ESP_PWR_LVL_P9);
   log_i("Connecting to BLE device...");
   NimBLEAddress deviceAddress(deviceAddressLiteral, 1);
   _client = NimBLEDevice::createClient(deviceAddress);
