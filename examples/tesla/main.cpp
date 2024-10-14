@@ -53,6 +53,7 @@ void detectLongTask() {
 
 void trackMemory() {
   if (millis() - lastTick > tickInterval) {
+    Serial.print("Free heap: ");
     Serial.println(esp_get_free_heap_size());
     lastTick = millis();
     tickCount++;
@@ -62,7 +63,7 @@ void trackMemory() {
 void loop() {
   connector.update();
   if (listener.isListening()) {
-    tick();
+    trackMemory();
   }
   detectLongTask();
 }
