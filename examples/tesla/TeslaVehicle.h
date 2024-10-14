@@ -12,7 +12,7 @@ enum Gear {
   D = 4,
 };
 
-#define VEHICLE_LOG_STATE 1
+#define TESLA_VEHICLE_LOG_ENABLED 1
 
 class TeslaVehicle {
   friend class TeslaCANMessageProcessor;
@@ -161,31 +161,31 @@ class TeslaVehicle {
   }
 
   void logState(const char* name, int8_t value) {
-#if VEHICLE_LOG_STATE
+#if TESLA_VEHICLE_LOG_ENABLED
     Serial.printf("%s: %d\n", name, value);
 #endif
   }
 
   void logState(const char* name, uint8_t value) {
-#if VEHICLE_LOG_STATE
+#if TESLA_VEHICLE_LOG_ENABLED
     Serial.printf("%s: %d\n", name, value);
 #endif
   }
 
   void logState(const char* name, uint16_t value) {
-#if VEHICLE_LOG_STATE
+#if TESLA_VEHICLE_LOG_ENABLED
     Serial.printf("%s: %d\n", name, value);
 #endif
   }
 
   void logState(const char* name, float_t value) {
-#if VEHICLE_LOG_STATE
+#if TESLA_VEHICLE_LOG_ENABLED
     Serial.printf("%s: %.2f\n", name, value);
 #endif
   }
 
   void logState(const char* name, bool value) {
-#if VEHICLE_LOG_STATE
+#if TESLA_VEHICLE_LOG_ENABLED
     Serial.printf("%s: %s\n", name, value ? "true" : "false");
 #endif
   }
