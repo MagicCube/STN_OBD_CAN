@@ -10,7 +10,7 @@ const char* DEVICE_ADDRESS = "c0:08:e1:98:fc:c8";
 unsigned long monitoringStart = 0;
 
 TeslaVehicle vehicle;
-TeslaCANMessageProcessor processor(&vehicle);
+TeslaCANMessageProcessor processor(vehicle);
 CANMessageListener listener(TESLA_CAN_MESSAGES);
 OBDConnector connector(TESLA_CAN_MESSAGES);
 

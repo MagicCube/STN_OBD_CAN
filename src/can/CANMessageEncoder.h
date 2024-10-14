@@ -22,7 +22,7 @@ class CANMessageEncoder {
     return hex_to_uint16(hexString);
   }
 
-  static int8_t extract_int8(uint8_t* frame, int startBit, int bitLength,
+  static int8_t extract_int8(const uint8_t* frame, int startBit, int bitLength,
                              float factor = 1.0, float offset = 0.0) {
     uint8_t mask = (1 << bitLength) - 1;
     int byteIndex = startBit / 8;
@@ -34,8 +34,9 @@ class CANMessageEncoder {
     return static_cast<int8_t>(value * factor + offset);
   }
 
-  static uint8_t extract_uint8(uint8_t* frame, int startBit, int bitLength,
-                               float factor = 1.0, float offset = 0.0) {
+  static uint8_t extract_uint8(const uint8_t* frame, int startBit,
+                               int bitLength, float factor = 1.0,
+                               float offset = 0.0) {
     uint8_t mask = (1 << bitLength) - 1;
     int byteIndex = startBit / 8;
     int bitIndex = startBit % 8;
@@ -43,8 +44,9 @@ class CANMessageEncoder {
     return static_cast<uint8_t>(value * factor + offset);
   }
 
-  static int16_t extract_int16(uint8_t* frame, int startBit, int bitLength,
-                               float factor = 1.0, float offset = 0.0) {
+  static int16_t extract_int16(const uint8_t* frame, int startBit,
+                               int bitLength, float factor = 1.0,
+                               float offset = 0.0) {
     uint16_t mask = (1 << bitLength) - 1;
     int byteIndex = startBit / 8;
     int bitIndex = startBit % 8;
@@ -57,8 +59,9 @@ class CANMessageEncoder {
     return static_cast<int16_t>(value * factor + offset);
   }
 
-  static uint16_t extract_uint16(uint8_t* frame, int startBit, int bitLength,
-                                 float factor = 1.0, float offset = 0.0) {
+  static uint16_t extract_uint16(const uint8_t* frame, int startBit,
+                                 int bitLength, float factor = 1.0,
+                                 float offset = 0.0) {
     uint16_t mask = (1 << bitLength) - 1;
     int byteIndex = startBit / 8;
     int bitIndex = startBit % 8;
@@ -68,8 +71,9 @@ class CANMessageEncoder {
     return static_cast<uint16_t>(value * factor + offset);
   }
 
-  static int32_t extract_int32(uint8_t* frame, int startBit, int bitLength,
-                               float factor = 1.0, float offset = 0.0) {
+  static int32_t extract_int32(const uint8_t* frame, int startBit,
+                               int bitLength, float factor = 1.0,
+                               float offset = 0.0) {
     uint32_t mask = (1UL << bitLength) - 1;
     int byteIndex = startBit / 8;
     int bitIndex = startBit % 8;
@@ -84,8 +88,9 @@ class CANMessageEncoder {
     return static_cast<int32_t>(value * factor + offset);
   }
 
-  static uint32_t extract_uint32(uint8_t* frame, int startBit, int bitLength,
-                                 float factor = 1.0, float offset = 0.0) {
+  static uint32_t extract_uint32(const uint8_t* frame, int startBit,
+                                 int bitLength, float factor = 1.0,
+                                 float offset = 0.0) {
     uint32_t mask = (1UL << bitLength) - 1;
     int byteIndex = startBit / 8;
     int bitIndex = startBit % 8;
@@ -97,13 +102,13 @@ class CANMessageEncoder {
     return static_cast<uint32_t>(value * factor + offset);
   }
 
-  static float extract_float(uint8_t* frame, int startBit, int bitLength,
+  static float extract_float(const uint8_t* frame, int startBit, int bitLength,
                              float factor = 1.0, float offset = 0.0) {
     uint32_t value = extract_uint32(frame, startBit, bitLength);
     return static_cast<float>(value * factor + offset);
   }
 
-  static time_t extract_time(uint8_t* frame) {
+  static time_t extract_time(const uint8_t* frame) {
     uint16_t year = extract_uint8(frame, 0, 8) + 2000;
     uint8_t month = extract_uint8(frame, 8, 8);
     uint8_t seconds = extract_uint8(frame, 16, 8);
