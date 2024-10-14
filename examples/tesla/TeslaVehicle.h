@@ -28,7 +28,7 @@ class TeslaVehicle {
     }
   }
 
-  uint16_t getSpeed() { return _speed; }
+  uint16_t getSpeed() const { return _speed; }
   void setSpeed(uint16_t speed) {
     if (_speed != speed) {
       _speed = speed;
@@ -36,7 +36,7 @@ class TeslaVehicle {
     }
   }
 
-  float_t getRange() { return _range; }
+  float_t getRange() const { return _range; }
   void setRange(float_t range) {
     if (_range != range) {
       _range = range;
@@ -44,7 +44,7 @@ class TeslaVehicle {
     }
   }
 
-  float_t getStateOfCharge() { return _stateOfCharge; }
+  float_t getStateOfCharge() const { return _stateOfCharge; }
   void setStateOfCharge(float_t stateOfCharge) {
     if (_stateOfCharge != stateOfCharge) {
       _stateOfCharge = stateOfCharge;
@@ -52,7 +52,7 @@ class TeslaVehicle {
     }
   }
 
-  float_t getTemperatureAmbient() { return _temperatureAmbient; }
+  float_t getTemperatureAmbient() const { return _temperatureAmbient; }
   void setTemperatureAmbient(float_t temperatureAmbient) {
     if (_temperatureAmbient != temperatureAmbient) {
       _temperatureAmbient = temperatureAmbient;
@@ -60,7 +60,7 @@ class TeslaVehicle {
     }
   }
 
-  uint8_t getDisplayBrightnessLevel() { return _displayBrightnessLevel; }
+  uint8_t getDisplayBrightnessLevel() const { return _displayBrightnessLevel; }
   void setDisplayBrightnessLevel(uint8_t displayBrightnessLevel) {
     if (_displayBrightnessLevel != displayBrightnessLevel) {
       _displayBrightnessLevel = displayBrightnessLevel;
@@ -68,7 +68,7 @@ class TeslaVehicle {
     }
   }
 
-  bool isLeftTurnSignalOn() { return _leftTurnSignal; }
+  bool isLeftTurnSignalOn() const { return _leftTurnSignal; }
   void setLeftTurnSignal(bool leftTurnSignal) {
     if (_leftTurnSignal != leftTurnSignal) {
       _leftTurnSignal = leftTurnSignal;
@@ -76,7 +76,7 @@ class TeslaVehicle {
     }
   }
 
-  bool isRightTurnSignalOn() { return _rightTurnSignal; }
+  bool isRightTurnSignalOn() const { return _rightTurnSignal; }
   void setRightTurnSignal(bool rightTurnSignal) {
     if (_rightTurnSignal != rightTurnSignal) {
       _rightTurnSignal = rightTurnSignal;
@@ -84,11 +84,11 @@ class TeslaVehicle {
     }
   }
 
-  bool isHazardLightsOn() {
+  bool isHazardLightsOn() const {
     return isRightTurnSignalOn() && isLeftTurnSignalOn();
   }
 
-  bool isBrakeLightOn() { return _brakeLight; }
+  bool isBrakeLightOn() const { return _brakeLight; }
   void setBrakeLight(bool value) {
     if (_brakeLight != value) {
       _brakeLight = value;
@@ -96,7 +96,7 @@ class TeslaVehicle {
     }
   }
 
-  bool isFrontLeftDoorClosed() { return _frontLeftDoorClosed; }
+  bool isFrontLeftDoorClosed() const { return _frontLeftDoorClosed; }
   void setFrontLeftDoorClosed(bool value) {
     if (_frontLeftDoorClosed != value) {
       _frontLeftDoorClosed = value;
@@ -104,7 +104,7 @@ class TeslaVehicle {
     }
   }
 
-  bool isFrontRightDoorClosed() { return _frontRightDoorClosed; }
+  bool isFrontRightDoorClosed() const { return _frontRightDoorClosed; }
   void setFrontRightDoorClosed(bool value) {
     if (_frontRightDoorClosed != value) {
       _frontRightDoorClosed = value;
@@ -112,7 +112,7 @@ class TeslaVehicle {
     }
   }
 
-  bool isRearLeftDoorClosed() { return _rearLeftDoorClosed; }
+  bool isRearLeftDoorClosed() const { return _rearLeftDoorClosed; }
   void setRearLeftDoorClosed(bool value) {
     if (_rearLeftDoorClosed != value) {
       _rearLeftDoorClosed = value;
@@ -120,7 +120,7 @@ class TeslaVehicle {
     }
   }
 
-  bool isRearRightDoorClosed() { return _rearRightDoorClosed; }
+  bool isRearRightDoorClosed() const { return _rearRightDoorClosed; }
   void setRearRightDoorClosed(bool value) {
     if (_rearRightDoorClosed != value) {
       _rearRightDoorClosed = value;
@@ -128,7 +128,7 @@ class TeslaVehicle {
     }
   }
 
-  int8_t getSwitchRightScrollTicks() { return _switchRightScrollTicks; }
+  int8_t getSwitchRightScrollTicks() const { return _switchRightScrollTicks; }
   void setSwitchRightScrollTicks(int8_t value) {
     if (_switchRightScrollTicks != value) {
       _switchRightScrollTicks = value;
@@ -141,7 +141,7 @@ class TeslaVehicle {
            !isRearLeftDoorClosed() || !isRearRightDoorClosed();
   }
 
-  bool isMoving() { return getSpeed() > 0; }
+  bool isMoving() const { return getSpeed() > 0; }
 
   void reset() {
     _gear = Gear::P;
