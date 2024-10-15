@@ -8,7 +8,8 @@ class NimBLERemoteCharacteristic;
 
 class BLESerialConnection {
  public:
-  BLESerialConnection(uint16_t bufferSize = 1024) : _bufferSize(bufferSize) {}
+  BLESerialConnection(uint16_t bufferSize = 4 * 1024)
+      : _bufferSize(bufferSize) {}
 
   bool isConnected() const { return _connected; }
 

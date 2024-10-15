@@ -11,7 +11,7 @@ unsigned long monitoringStart = 0;
 
 TeslaVehicle vehicle;
 
-BLESerialConnection connection(512);
+BLESerialConnection connection(4 * 1024);
 TeslaCANMessageProcessor processor(vehicle);
 CANMessageListener listener(TESLA_CAN_MESSAGES);
 OBDConnector connector(connection, TESLA_CAN_MESSAGES);
