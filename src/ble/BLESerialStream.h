@@ -9,7 +9,7 @@ class NimBLERemoteCharacteristic;
 class BLESerialStream : public Stream {
  public:
   BLESerialStream(NimBLERemoteCharacteristic* characteristic,
-                  const size_t bufferSize = 4 * 1024);
+                  const size_t bufferSize = 1 * 1024);
 
   void subscribe();
 

@@ -11,7 +11,8 @@ unsigned long monitoringStart = 0;
 
 TeslaVehicle vehicle;
 
-BLESerialConnection connection(4 * 1024);
+// In my case, setting the buffer size to 1KB works the best.
+BLESerialConnection connection(1 * 1024);
 TeslaCANMessageProcessor processor(vehicle);
 CANMessageListener listener(TESLA_CAN_MESSAGES);
 OBDConnector connector(connection, TESLA_CAN_MESSAGES);
