@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ble/BLESerialConnection.h"
+#include "ble/BLESerialStream.h"
 #include "can/CANMessageDefinition.h"
 #include "can/CANMessageDefinitionCollection.h"
 #include "can/CANMessageEncoder.h"
