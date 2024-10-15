@@ -20,6 +20,10 @@ bool BLESerialConnection::connect(const char* deviceAddressLiteral) {
   }
   log_i("Connected to BLE device");
 
+  log_i("Updating connection parameters to maximize performance");
+  _client->updateConnParams(6, 12, 0,
+                            60);  // minInterval, maxInterval, latency, timeout
+
   auto services = _client->getServices(true);
   for (int i = 0; i < services->size(); i++) {
     auto service = services->at(i);
