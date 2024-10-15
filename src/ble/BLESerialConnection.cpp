@@ -57,7 +57,7 @@ void BLESerialConnection::disconnect() {
 
 BLESerialStream* BLESerialConnection::getStream() {
   if (!_stream && _characteristic) {
-    _stream = new BLESerialStream(_characteristic);
+    _stream = new BLESerialStream(_characteristic, _bufferSize);
     _stream->subscribe();
   }
   return _stream;

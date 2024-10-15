@@ -7,21 +7,20 @@
 #include "../can/CANMessageListener.h"
 
 OBDConnector::OBDConnector(
+    BLESerialConnection& connection,
     const CANMessageDefinitionCollection& messageDefinitions)
-    : _messageDefinitions(messageDefinitions) {
-  _connection = new BLESerialConnection();
-}
+    : _connection(connection), _messageDefinitions(messageDefinitions) {}
 
 bool OBDConnector::isConnected() const {
-  return _connection->isConnected() && _stream;
+  return _connection.isConnected() && _stream;
 }
 
 bool OBDConnector::isMonitoring() const { return isConnected() && _monitoring; }
 
 bool OBDConnector::connect(const char* deviceAddress) {
-  bool connected = _connection->connect(deviceAddress);
+  bool connected = _connection.connect(deviceAddress);
   if (connected) {
-    _stream = _connection->getStream();
+    _stream = _connection.getStream();
     resetOBD();
   }
   return connected;
@@ -64,7 +63,7 @@ void OBDConnector::sendCommand(const String& command, bool expectOK) {
 }
 
 void OBDConnector::startMonitoring() {
-  if (!_connection->isConnected()) return;
+  if (!_connection.isConnected()) return;
   if (_monitoring) return;
   sendCommand("ST M", false);
   if (_listener) {

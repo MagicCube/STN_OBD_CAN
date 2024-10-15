@@ -11,7 +11,8 @@ class CANMessageListener;
 
 class OBDConnector {
  public:
-  OBDConnector(const CANMessageDefinitionCollection& messageDefinitions);
+  OBDConnector(BLESerialConnection& connection,
+               const CANMessageDefinitionCollection& messageDefinitions);
 
   bool isConnected() const;
 
@@ -40,7 +41,7 @@ class OBDConnector {
   void tx(const String& command);
 
  private:
-  BLESerialConnection* _connection;
+  BLESerialConnection& _connection;
   const CANMessageDefinitionCollection& _messageDefinitions;
   BLESerialStream* _stream;
   CANMessageListener* _listener;

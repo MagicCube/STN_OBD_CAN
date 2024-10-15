@@ -10,9 +10,11 @@ const char* DEVICE_ADDRESS = "c0:08:e1:98:fc:c8";
 unsigned long monitoringStart = 0;
 
 TeslaVehicle vehicle;
+
+BLESerialConnection connection(512);
 TeslaCANMessageProcessor processor(vehicle);
 CANMessageListener listener(TESLA_CAN_MESSAGES);
-OBDConnector connector(TESLA_CAN_MESSAGES);
+OBDConnector connector(connection, TESLA_CAN_MESSAGES);
 
 void setup() {
   Serial.begin(115200);
