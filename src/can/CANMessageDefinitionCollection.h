@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "CANMessageDefinition.h"
+class CANMessageDefinition;
 
 class CANMessageDefinitionCollection {
  public:

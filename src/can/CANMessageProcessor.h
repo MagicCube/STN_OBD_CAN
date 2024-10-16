@@ -2,10 +2,6 @@
 
 #include <Arduino.h>
 
-#include "../utils/hex_converters.h"
-#include "../utils/unit_converters.h"
-#include "CANMessageEncoder.h"
-
 class CANMessageProcessor {
  public:
   virtual ~CANMessageProcessor() = default;
