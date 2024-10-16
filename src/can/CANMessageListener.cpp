@@ -30,12 +30,16 @@ void CANMessageListener::update() {
     return;
   }
 
-  _readLines(_buffer);
+  int lineCount = _readLines(_buffer);
+  // Serial.print("Line count: ");
+  // Serial.println(lineCount);
 
   // If there's a partial message left, keep it for next time,
   // otherwise clear the buffer
   if (_buffer.length() > lastIndexOfCR + 1) {
     _buffer = _buffer.substring(lastIndexOfCR + 1);
+    // Serial.print("Buffer length: ");
+    // Serial.println(_buffer.length());
   } else {
     clearBuffer();
   }
@@ -52,11 +56,13 @@ void CANMessageListener::_processRawMessage(
   }
 }
 
-void CANMessageListener::_readLines(const String& content) {
+const int CANMessageListener::_readLines(const String& content) {
   int startIndex = 0;
   int endIndex = 0;
 
+  int lineCount = 0;
   while ((endIndex = content.indexOf('\r', startIndex)) != -1) {
+    lineCount++;
     if (endIndex - startIndex > 3) {
       String rawMessageId = content.substring(startIndex, startIndex + 3);
       uint16_t messageId = CANMessageEncoder::parseMessageId(rawMessageId);
@@ -68,4 +74,5 @@ void CANMessageListener::_readLines(const String& content) {
     }
     startIndex = endIndex + 1;
   }
+  return lineCount;
 }

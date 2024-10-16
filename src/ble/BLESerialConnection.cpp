@@ -22,7 +22,7 @@ bool BLESerialConnection::connect(const char* deviceAddressLiteral) {
 
   log_i("Updating connection parameters to maximize performance");
   _client->updateConnParams(6, 12, 0,
-                            60);  // minInterval, maxInterval, latency, timeout
+                            60);  // minInterval, maxInterval, latency,
 
   auto services = _client->getServices(true);
   for (int i = 0; i < services->size(); i++) {
@@ -35,9 +35,9 @@ bool BLESerialConnection::connect(const char* deviceAddressLiteral) {
         if (characteristic->getUUID().equals(SERIAL_CHARACTERISTIC_ID)) {
           log_i("BLE serial characteristic found");
           _characteristic = characteristic;
-          log_i("handler %d", _characteristic->getHandle());
           _connected = true;
           log_i("BLE serial connection is now ready to interact");
+          log_i("BLE MTU: %d", _client->getMTU());
           return true;
         }
       }

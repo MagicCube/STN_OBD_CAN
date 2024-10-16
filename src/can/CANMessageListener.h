@@ -29,7 +29,7 @@ class CANMessageListener {
   void _processRawMessage(const CANMessageDefinition* messageDefinition,
                           const String& rawFrame);
 
-  void _readLines(const String& content);
+  const int _readLines(const String& content);
 
  private:
   Stream* _stream;
